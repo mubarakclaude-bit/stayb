@@ -1,7 +1,10 @@
 // Run: node tools/build.mjs  -> writes static pages into /site
 import fs from 'fs'; import {fileURLToPath} from 'url';
-const OUT = fileURLToPath(new URL('../site/', import.meta.url));
-const BASE = 'https://staybin.vercel.app'; // change when a custom domain is attached
+// PREVIEW=<github-user> -> client preview for GitHub Pages at https://<user>.github.io/stayb/ (noindex, /stayb prefix, output in docs/)
+const PV = process.env.PREVIEW;
+const OUT = fileURLToPath(new URL(PV ? '../docs/' : '../site/', import.meta.url));
+const PFX = PV ? '/stayb' : '';
+const BASE = PV ? `https://${PV}.github.io/stayb` : 'https://staybin.vercel.app'; // change when a custom domain is attached
 const PHONE = '+919633310117', PHONE_DISP = '96333 10117';
 const WA = 'https://wa.me/919633310117?text=' + encodeURIComponent("Hi, I'm looking for a bed at StayB near Infopark. Is there availability?");
 const MAPS = 'https://maps.google.com/?q=StayB+Hostel+Infopark+Kochi';
@@ -74,6 +77,9 @@ const LANDINGS = [
    faq:[FAQ[6],FAQ[3],FAQ[7]] },
 ];
 
+const W=fs.writeFileSync;
+fs.writeFileSync=(f,c)=>{ if(typeof c==='string'&&PV&&f.endsWith('.html')) c=c.replace(/(href|src)="\/(?!\/)/g,'$1="'+PFX+'/').replace('index,follow','noindex,nofollow'); if(PV&&/sitemap|llms|robots/.test(f)) return; return W(f,c)};
+fs.mkdirSync(OUT,{recursive:true});
 const esc = s => s.replace(/"/g,'&quot;');
 const strip = s => s.replace(/<[^>]+>/g,'');
 const faqHtml = f => f.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('');
@@ -222,7 +228,8 @@ fs.writeFileSync(OUT+'sitemap.xml',`<?xml version="1.0" encoding="UTF-8"?><urlse
 fs.writeFileSync(OUT+'robots.txt',`User-agent: *\nAllow: /\nSitemap: ${BASE}/sitemap.xml\n`);
 fs.writeFileSync(OUT+'llms.txt',`# StayB Men's Hostel\n> Men's hostel in Kakkanad, Kochi, a 7-minute walk from Infopark Phase 2. ₹7,000/month including breakfast, packed lunch, dinner, WiFi, laundry and ironing. First month ₹8,000 including refundable deposit and admission. Phone ${PHONE_DISP}.\n\n${urls.map(u=>`- ${BASE}${u}`).join('\n')}\n`);
 fs.writeFileSync(OUT+'404.html', head({title:'Page not found | StayB',desc:'Page not found',path:'/404',ld:{}}).replace('index,follow','noindex')+nav+`<header class="lp-hero"><div class="wrap"><h1>Lost? <em>Home</em> is 7 minutes away.</h1><div class="cta" style="margin-top:30px"><a class="btn sun" href="/">Back to StayB</a></div></div></header>`+footer);
-fs.writeFileSync(OUT+'vercel.json', JSON.stringify({cleanUrls:true,headers:[
+if(!PV)fs.writeFileSync(OUT+"vercel.json", JSON.stringify({cleanUrls:true,headers:[
  {source:'/assets/(.*)',headers:[{key:'Cache-Control',value:'public, max-age=31536000, immutable'}]},
  {source:'/img/(.*)',headers:[{key:'Cache-Control',value:'public, max-age=31536000, immutable'}]}]},null,2));
+if(PV){fs.cpSync(new URL('../site/assets/',import.meta.url),OUT+'assets',{recursive:true});fs.cpSync(new URL('../site/img/',import.meta.url),OUT+'img',{recursive:true});W(OUT+'.nojekyll','');fs.writeFileSync=W;W(OUT+'robots.txt','User-agent: *\nDisallow: /\n')}
 console.log('built',urls.length,'pages');
