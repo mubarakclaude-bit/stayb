@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://staybin.vercel.app/sitemap.xml
