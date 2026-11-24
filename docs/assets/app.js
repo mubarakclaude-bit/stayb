@@ -13,12 +13,13 @@ $$('.rv').forEach(el=>io.observe(el));
 const day=$('.day .track');
 let dayUpdate=()=>{};
 if(day){
-  const svg=$('.scene'),sun=$('.sunb',svg),moon=$('.moon',svg),moonCut=$('.moon-cut',svg),stars=$('.stars',svg),
-        shade=$('.shade',svg),wins=$$('.wins rect',svg),hwins=$$('.hwins rect',svg),walker=$('.walker',svg),road=$('.road',svg),
-        far=$('.far',svg),ground=$('.ground',svg),towers=$('.towers',svg),sky=$('.day .sky'),clock=$('.clock'),evt=$('.evt'),fill=$('.tl-fill'),ticks=$('.tl-ticks');
+  const stick=$('.day .stick'),bar=$('.day-bar'),svg=$('.scene'),sun=$('.sunb',svg),moon=$('.moon',svg),moonCut=$('.moon-cut',svg),stars=$('.stars',svg),
+        wins=$$('.wins rect',svg),walker=$('.walker',svg),road=$('.road',svg),far=$('.far',svg),ground=$('.ground',svg),gwave=$('.g-wave',svg),towers=$('.towers',svg),
+        hWalls=$$('.s-house .h-wall',svg),hRoofs=$$('.s-house .h-roof',svg),hWins=$$('.s-house .h-win rect',svg),pTrunks=$$('.s-palm .p-trunk',svg),pLeaves=$$('.s-palm .p-leaf',svg),
+        sky=$('.day .sky'),clock=$('.clock'),evt=$('.evt'),fill=$('.tl-fill'),ticks=$('.tl-ticks');
   const roadLen=road.getTotalLength();
   // Kochi sits ~10°N: sunrise/sunset stay close to 06:15 / 18:15 all year.
-  const RISE=6.25,SET=18.25;
+  const RISE=6.25,SET=18.25,HORIZON=410;
   // scroll progress -> hour of day. Walks get extra scroll so they are watchable.
   const MAP=[[0,6],[.12,7.5],[.22,8.75],[.34,8.95],[.46,13],[.58,18.3],[.70,18.5],[.84,20],[1,23.25]];
   const EVENTS=[
@@ -32,22 +33,27 @@ if(day){
   // sky gradient keyframes [hour, top, bottom]
   const SKY=[[0,'#070c1a','#111a2e'],[5.6,'#0b1328','#1c2740'],[6.25,'#40508a','#f0a35e'],[7.3,'#6aa3d6','#f4d6a2'],[9.5,'#3f8dd0','#a8d3ee'],
              [15.5,'#3d88c9','#b7dbef'],[17.4,'#5a7fbf','#f2c487'],[18.25,'#4a3e6e','#f0884a'],[19,'#232748','#6b4866'],[20.5,'#0e1631','#1e2642'],[24,'#070c1a','#111a2e']];
-  const hex=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+  const hex=h=>h[0]==='#'?[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)):h.match(/\d+/g).map(Number);
   const mix=(a,b,t)=>{const A=hex(a),B=hex(b);return'rgb('+A.map((v,i)=>Math.round(lerp(v,B[i],t))).join(',')+')'};
   const skyAt=h=>{for(let i=0;i<SKY.length-1;i++){const[a,t1,b1]=SKY[i],[b,t2,b2]=SKY[i+1];if(h>=a&&h<=b){const t=(h-a)/(b-a);return[mix(t1,t2,t),mix(b1,b2,t)]}}return[SKY[0][1],SKY[0][2]]};
   const hourAt=p=>{for(let i=0;i<MAP.length-1;i++){const[a,h1]=MAP[i],[b,h2]=MAP[i+1];if(p<=b)return lerp(h1,h2,(p-a)/(b-a))}return MAP.at(-1)[1]};
   const pAt=h=>{for(let i=0;i<MAP.length-1;i++){const[a,h1]=MAP[i],[b,h2]=MAP[i+1];if(h<=h2)return lerp(a,b,(h-h1)/(h2-h1))}return 1};
   // darkness 0 (noon) .. 1 (deep night)
   const darkAt=h=>h<5.6?1:h<6.9?1-(h-5.6)/1.3:h<17.6?0:h<19.6?(h-17.6)/2:1;
-  // timeline ticks
   ticks.innerHTML=EVENTS.map(e=>`<li style="left:${(pAt(e.at)*100).toFixed(2)}%"><b>${e.t}</b>${e.l}</li>`).join('');
   const tickEls=$$('li',ticks);
-  // sun/moon follow a true arc across the scene (viewBox 1440x560)
-  // Arc height adapts to the screen so the sun always passes below the text panel.
-  const panel=$('.panel');let RY=300;
-  const fitArc=()=>{const sr=svg.getBoundingClientRect(),k=sr.width/1440,pb=(panel.getBoundingClientRect().bottom-sr.top)/k;RY=clamp(505-Math.max(60,pb+44+24),120,380)};
-  addEventListener('resize',fitArc);fitArc();
-  const arc=u=>{const a=Math.PI*(1-u);return[720+660*Math.cos(a),505-RY*Math.sin(a)]};
+  // The text lives in a bar under the scene, so the sun has the whole sky.
+  // The arc's peak is fitted to the part of the scene actually on screen.
+  let RY=300;
+  const fit=()=>{
+    stick.style.setProperty('--uih',bar.offsetHeight+'px');
+    // meet-scaled and bottom-anchored: find the scene's drawn top, then how much of it sits under the nav or off screen
+    const r=svg.getBoundingClientRect(),k=Math.min(r.width/1440,r.height/560),drawnTop=r.bottom-560*k,
+          safeTop=stick.getBoundingClientRect().top+84,visTop=Math.max(0,(safeTop-drawnTop)/k);
+    RY=clamp(HORIZON-(visTop+60),150,320);
+  };
+  addEventListener('resize',fit);fit();
+  const arc=(u,ry)=>{const a=Math.PI*(1-u);return[720+660*Math.cos(a),HORIZON-ry*Math.sin(a)]};
   let last=-1;
   dayUpdate=()=>{
     const r=day.getBoundingClientRect(),p=clamp(-r.top/(r.height-innerHeight));
@@ -56,19 +62,23 @@ if(day){
     sky.style.background=`linear-gradient(180deg,${top} 0%,${bot} 100%)`;
     moonCut.style.fill=top;
     const d=darkAt(h);
-    shade.style.opacity=(d*.55).toFixed(3);
     stars.style.opacity=clamp((d-.4)/.6).toFixed(3);
-    // sun
-    if(h>RISE-.3&&h<SET+.3){const[x,y]=arc(clamp((h-RISE)/(SET-RISE)));sun.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})`);sun.style.opacity=clamp(Math.min(h-(RISE-.3),(SET+.3)-h)/.5)}else sun.style.opacity=0;
-    // moon rises in the east after dusk
-    if(h>18.6){const[x,y]=arc(clamp(.45+(h-18.6)/12*.8));moon.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})`);moon.style.opacity=clamp((h-18.6)/.8)}else moon.style.opacity=0;
-    // hills tint toward night
-    far.style.fill=mix('#2c4b34','#16251c',d);const g=mix('#1c3122','#0e1a12',d);ground.style.fill=g;day.firstElementChild.style.setProperty('--gnd',mix(g.replace(/rgb\((\d+),(\d+),(\d+)\)/,(m,r,gg,b)=>'#'+[r,gg,b].map(v=>(+v).toString(16).padStart(2,'0')).join('')),'#08101f',d*.55));towers.style.fill=mix('#24372b','#141f19',d);svg.querySelectorAll('.house .m-house').forEach(p=>p.style.stroke=mix('#f6f3e8','#8a918c',d));svg.querySelectorAll('.house .m-wave').forEach(p=>p.style.stroke=mix('#6b9a62','#33503a',d));
-    // windows: offices lit in late evening, hostel lit once home
+    // sun: drawn behind the hills, so it rises out of them and sets behind the towers
+    if(h>RISE-.4&&h<SET+.4){const[x,y]=arc(clamp((h-RISE)/(SET-RISE)),RY);sun.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})`);sun.style.opacity=1}else sun.style.opacity=0;
+    // moon follows the same sky, rising after dusk
+    if(h>18.6){const[x,y]=arc(clamp(.42+(h-18.6)/12*.8),RY*.9);moon.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})`);moon.style.opacity=clamp((h-18.6)/.8)}else moon.style.opacity=0;
+    // landscape tints toward night
+    far.style.fill=mix('#2c4b34','#15241b',d);towers.style.fill=mix('#24372b','#131e18',d);
+    const g=mix('#1c3122','#0d1811',d);ground.style.fill=g;stick.style.setProperty('--gnd',g);
+    gwave.style.stroke=mix('#6b9a62','#2f4a35',d);
+    hWalls.forEach((w,i)=>w.style.fill=mix(i?'#33523a':'#2c4732',i?'#1d2d22':'#1a281e',d));
+    hRoofs.forEach(w=>w.style.stroke=mix('#f6f3e8','#8f968f',d));
+    pTrunks.forEach(w=>w.style.stroke=mix('#7c8a5a','#3b4433',d));pLeaves.forEach(w=>w.style.stroke=mix('#6b9a62','#2d4430',d));
+    // windows: offices lit in late evening; the hostel lights up when people are home
     const officeLit=h>17.2&&h<21.5?clamp(Math.min((h-17.2)/.8,(21.5-h)/.8)):0;
-    wins.forEach((w,i)=>{w.style.fill=officeLit>.05&&(i*7%5)<3?'#f3d82b':'#cfe0e6';w.style.opacity=(.16+officeLit*.6*((i*7%5)<3)).toFixed(2)});
-    const homeLit=h>18.5?clamp((h-18.5)/.4):h<7?.9:0;
-    hwins.forEach(w=>w.style.opacity=homeLit.toFixed(2));
+    wins.forEach((w,i)=>{const on=(i*7%5)<3;w.style.fill=officeLit>.05&&on?'#f3d82b':'#cfe0e6';w.style.opacity=(.16+officeLit*.6*on).toFixed(2)});
+    const homeLit=h>18.4?clamp((h-18.4)/.4):h<7.2?clamp((7.2-h)/.6):0;
+    hWins.forEach((w,i)=>{const on=i%3!==2||h<22.4;w.style.fill=homeLit>.05&&on?'#f3d82b':'#a9c3cc';w.style.opacity=(homeLit>.05&&on?.35+homeLit*.65:.55).toFixed(2)});
     // walker on the road during the two walks
     let wt=-1;
     if(h>=8.75&&h<=8.95)wt=(h-8.75)/.2;else if(h>=18.3&&h<=18.5)wt=1-(h-18.3)/.2;
@@ -78,14 +88,14 @@ if(day){
     clock.textContent=String(Math.floor(mins/60)%24).padStart(2,'0')+':'+String(mins%60).padStart(2,'0');
     // phones: the panorama is wider than the screen, so a camera follows the story
     if(innerWidth<820){
-      const CAM=[[0,250],[8.75,250],[8.95,1180],[16.5,1180],[18.25,1240],[18.3,1180],[18.5,250],[24,250]];
-      let fx=250;for(let i=0;i<CAM.length-1;i++){const[a,x1]=CAM[i],[b,x2]=CAM[i+1];if(h>=a&&h<=b){const t=(h-a)/(b-a);fx=lerp(x1,x2,t*t*(3-2*t));break}}
+      const CAM=[[0,230],[8.75,230],[8.95,1180],[16.5,1180],[18.25,1240],[18.3,1180],[18.5,230],[24,230]];
+      let fx=230;for(let i=0;i<CAM.length-1;i++){const[a,x1]=CAM[i],[b,x2]=CAM[i+1];if(h>=a&&h<=b){const t=(h-a)/(b-a);fx=lerp(x1,x2,t*t*(3-2*t));break}}
       const sw=svg.getBoundingClientRect().width,k=sw/1440;
       svg.style.transform=`translateX(${clamp(innerWidth/2-fx*k,innerWidth-sw,0).toFixed(1)}px)`;
     }else svg.style.transform='';
     fill.style.width=(p*100).toFixed(2)+'%';
     let k=0;EVENTS.forEach((e,i)=>{if(h>=e.at-.001)k=i});
-    if(k!==last){last=k;const e=EVENTS[k];$('h3',evt).textContent=e.h;$('p',evt).textContent=e.p;evt.classList.remove('swap');void evt.offsetWidth;evt.classList.add('swap');tickEls.forEach((t,i)=>t.classList.toggle('on',i===k))}
+    if(k!==last){last=k;const e=EVENTS[k];$('h3',evt).textContent=e.h;$('p',evt).textContent=e.p;evt.classList.remove('swap');void evt.offsetWidth;evt.classList.add('swap');tickEls.forEach((t,i)=>t.classList.toggle('on',i===k));fit()}
   };
 }
 
