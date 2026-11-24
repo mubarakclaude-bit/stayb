@@ -109,8 +109,11 @@ function head({title,desc,path,ld,extra=''}){
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css">${extra}
+<script>(function(d){d.classList.add('js');try{if(sessionStorage.getItem('stayb-intro'))d.classList.add('seen');if(sessionStorage.getItem('stayb-pt'))d.classList.add('pt-in')}catch(e){}})(document.documentElement)</script>
 <script type="application/ld+json">${JSON.stringify(ld)}</script></head><body>
-<div class="progress" aria-hidden="true"></div>`;
+<div class="progress" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div><div class="pt" aria-hidden="true"></div>
+<div class="cursor" aria-hidden="true"><span class="c-dot"></span><span class="c-lbl"></span></div><div class="hover-prev" aria-hidden="true"><img alt="" width="720" height="720"></div>`;
 }
 const ARROW = `<svg class="arr" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4"/></svg>`;
 const nav = `<header class="nav"><div class="wrap nav-in"><a class="brand" href="/" aria-label="StayB home"><img src="/img/logo-white.png" alt="StayB men's hostel logo" width="105" height="38"></a>
@@ -125,7 +128,7 @@ const footer = `<footer class="foot"><div class="wrap">
 <div><h4>StayB</h4><a href="/#price">Price</a><a href="/#faq">FAQ</a><a href="${MAPS}" rel="noopener">Open in Maps</a><a href="${WA}" rel="noopener">WhatsApp</a></div>
 </div>
 <p class="foot-base">© StayB · Kakkanad, Kochi</p>
-</div></footer>${dock}<script src="/assets/app.js" defer></script></body></html>`;
+</div></footer>${dock}<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js" defer></script><script src="/assets/app.js" defer></script></body></html>`;
 
 // thin-line diagrams
 const SUNPATH = `<svg class="sunpath" viewBox="0 0 600 270" aria-hidden="true">
@@ -168,7 +171,7 @@ const home = head({
   desc:"StayB men's hostel in Kakkanad, 7-minute walk to Infopark Phase 2, Kochi. ₹7,000/month with 3 meals, WiFi, laundry and ironing. Beds available now.",
   path:'/', ld:{...lodging,"@graph":[...lodging["@graph"],faqLd(FAQ)]},
   extra:`<link rel="preload" as="image" href="/img/p2.jpg">`
-}) + nav + `
+}) + `<div class="intro" aria-hidden="true"><div class="intro-in"><img src="/img/logo-white.png" alt="" width="105" height="38"><p class="intro-num"><span>00</span></p><p class="intro-lbl">minutes to Infopark</p></div><div class="intro-bar"><span></span></div></div>` + nav + `
 <main>
 <section class="hero">
 <div class="wrap hero-in">
@@ -190,6 +193,11 @@ const home = head({
 </section>
 
 <div class="ticker" aria-hidden="true"><div>${Array(2).fill('<span>Home to people from</span><b>TCS</b><i></i><b>Infosys</b><i></i><b>UST</b><i></i><span>and other Infopark companies</span><i></i><span>Freshers · Interns · IT professionals</span><i></i>').join('')}</div></div>
+
+<section class="breath" aria-label="No travel, no tension"><div class="b-track"><div class="b-stick">
+<div class="b-mask"><img src="/img/p2.jpg" alt="View from the StayB balcony over coconut palms in Kakkanad" loading="lazy" width="720" height="720"></div>
+<div class="b-copy"><p class="kicker">7 minutes to your desk</p><p class="b-line">No travel,<br><em>no tension.</em></p></div>
+</div></div></section>
 
 <section class="day" id="day" aria-label="A typical day at StayB"><div class="track"><div class="stick"><div class="wrap day-in">
 <div class="day-left">
@@ -222,7 +230,7 @@ ${SUNPATH}
 
 <section class="gal" id="photos"><div class="gtrack"><div class="gstick">
 <div class="wrap gal-head"><p class="kicker">Photos</p><h2>Bright rooms. <em>Green views.</em></h2></div>
-<div class="strip">
+<div class="strip" data-cursor="Scroll">
 <figure><div class="ph"><img src="/img/p2.jpg" alt="Laptop on the StayB balcony overlooking coconut palms and the Kakkanad skyline" loading="lazy" width="720" height="720"></div><figcaption><span>01</span>Balcony workspace</figcaption></figure>
 <figure><div class="ph"><img src="/img/p1.jpg" alt="StayB men's hostel building with balconies in Kakkanad, Kochi" loading="lazy" width="720" height="720"></div><figcaption><span>02</span>The building</figcaption></figure>
 <figure><div class="ph"><img src="/img/p3.jpg" alt="Beds and a side table inside a StayB hostel room near Infopark" loading="lazy" width="720" height="720"></div><figcaption><span>03</span>Rooms</figcaption></figure>
@@ -245,7 +253,7 @@ ${ROUTE_H}${ROUTE_V}
 <div><dt>Kakkanad</dt><dd>Kochi's IT corridor</dd></div>
 <a class="link" href="${MAPS}" rel="noopener">Open in Google Maps ${ARROW}</a>
 </dl>
-<div class="mapf rv"><iframe title="Map of Infopark Phase 2, Kakkanad, Kochi" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Infopark+Phase+2,+Kakkanad,+Kochi&z=15&output=embed"></iframe></div>
+<div class="mapf rv" data-cursor="Map"><iframe title="Map of Infopark Phase 2, Kakkanad, Kochi" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Infopark+Phase+2,+Kakkanad,+Kochi&z=15&output=embed"></iframe></div>
 </div>
 </div></section>
 
@@ -267,7 +275,7 @@ ${ROUTE_H}${ROUTE_V}
 <section class="areas light"><div class="wrap areas-in">
 <header class="sec-head rv"><p class="kicker">Find your stay</p><h2>Hostel in Kakkanad, <em>built for Infopark.</em></h2>
 <p class="lead">StayB is a men's hostel in Kakkanad, Kochi, made for people who work at Infopark. Whether you are searching for a hostel near Infopark, a PG for men, or a hostel with food, the answer is the same: walk 7 minutes, eat well and pay one price.</p></header>
-<ul class="index rv">${LANDINGS.map(l=>`<li><a href="/${l.slug}"><span>${l.kw}</span>${ARROW}</a></li>`).join('')}</ul>
+<ul class="index rv">${LANDINGS.map((l,i)=>`<li><a href="/${l.slug}" data-img="/img/${['p2','p1','p4','p3','p2','p1'][i]}.jpg"><span>${l.kw}</span>${ARROW}</a></li>`).join('')}</ul>
 </div></section>
 
 <section class="faq light" id="faq"><div class="wrap faq-in">

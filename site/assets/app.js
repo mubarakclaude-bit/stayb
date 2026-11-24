@@ -1,20 +1,108 @@
 (()=>{
 const $=(s,c=document)=>c.querySelector(s),$$=(s,c=document)=>[...c.querySelectorAll(s)];
+const root=document.documentElement;
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const finePointer=matchMedia('(hover: hover) and (pointer: fine)').matches;
 const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
 const lerp=(a,b,t)=>a+(b-a)*t;
+const easeOut=t=>1-Math.pow(1-t,3);
 const NS='http://www.w3.org/2000/svg';
+const store={get:k=>{try{return sessionStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{sessionStorage.setItem(k,v)}catch(e){}},del:k=>{try{sessionStorage.removeItem(k)}catch(e){}}};
 const progress=$('.progress'),nav=$('.nav'),dock=$('.dock');
 
-/* entrance */
-requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.add('is-in')));
+/* ---------- smooth scroll ---------- */
+let lenis=null;
+if(window.Lenis&&!reduce){
+  lenis=new Lenis({duration:1.15,easing:t=>Math.min(1,1.001-Math.pow(2,-10*t)),smoothWheel:true});
+  const raf=t=>{lenis.raf(t);requestAnimationFrame(raf)};requestAnimationFrame(raf);
+}
+const scrollToEl=el=>{const y=el.getBoundingClientRect().top+scrollY-(innerWidth>860?64:56);lenis?lenis.scrollTo(y,{duration:1.4}):scrollTo({top:y,behavior:reduce?'auto':'smooth'})};
 
-/* reveal on scroll */
+/* ---------- page entrance ---------- */
+const enter=()=>document.body.classList.add('is-in');
+const pt=$('.pt');
+// arriving through a page transition: lift the curtain
+if(root.classList.contains('pt-in')&&pt){
+  store.del('stayb-pt');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{pt.classList.add('leave');
+    setTimeout(()=>{pt.style.transition='none';root.classList.remove('pt-in');pt.classList.remove('leave');void pt.offsetWidth;pt.style.transition=''},900)}));
+}
+addEventListener('pageshow',e=>{if(e.persisted&&pt){pt.classList.remove('cover')}});
+
+/* ---------- intro (home, once per visit) ---------- */
+const intro=$('.intro');
+if(intro&&!root.classList.contains('seen')&&!reduce){
+  lenis&&lenis.stop();root.style.overflow='hidden';
+  const num=$('.intro-num span',intro),bar=$('.intro-bar span',intro),t0=performance.now(),D=1500;
+  const tick=t=>{const p=clamp((t-t0)/D),e=easeOut(p);num.textContent=String(Math.round(e*7)).padStart(2,'0');bar.style.transform=`scaleX(${e})`;
+    if(p<1)requestAnimationFrame(tick);
+    else setTimeout(()=>{intro.classList.add('done');store.set('stayb-intro','1');setTimeout(enter,250);
+      setTimeout(()=>{intro.style.display='none';root.style.overflow='';lenis&&lenis.start()},1100)},350)};
+  requestAnimationFrame(tick);
+}else{
+  if(intro)intro.style.display='none';
+  requestAnimationFrame(()=>requestAnimationFrame(enter));
+}
+
+/* ---------- links: in-page glide, cross-page curtain ---------- */
+document.addEventListener('click',e=>{
+  const a=e.target.closest('a');if(!a||e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
+  if(a.target==='_blank'||a.origin!==location.origin)return;
+  if(a.hash&&a.pathname===location.pathname){const t=document.getElementById(a.hash.slice(1));if(t){e.preventDefault();scrollToEl(t);history.replaceState(null,'',a.hash)}return}
+  if(pt&&!reduce&&/\.html$|\/[^.]*$/.test(a.pathname)&&!a.hasAttribute('download')){
+    e.preventDefault();store.set('stayb-pt','1');pt.classList.add('cover');setTimeout(()=>{location.href=a.href},760);
+  }
+});
+
+/* ---------- headings rise word by word ---------- */
+const splitWords=el=>{
+  let i=0;
+  const walk=node=>{[...node.childNodes].forEach(n=>{
+    if(n.nodeType===3){const parts=n.textContent.split(/(\s+)/);const frag=document.createDocumentFragment();
+      parts.forEach(p=>{if(!p)return;if(/^\s+$/.test(p)){frag.append(document.createTextNode(p));return}
+        const w=document.createElement('span');w.className='w';const s=document.createElement('span');s.textContent=p;s.style.setProperty('--i',i++);w.append(s);frag.append(w)});
+      n.replaceWith(frag)}
+    else if(n.nodeType===1&&n.tagName!=='BR')walk(n)})};
+  walk(el);el.classList.add('split');
+};
+const headIO=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');headIO.unobserve(e.target)}}),{threshold:.3});
+if(!reduce)$$('main h2:not(.qa h2)').forEach(h=>{splitWords(h);headIO.observe(h)});
+
+/* ---------- reveal on scroll ---------- */
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.14,rootMargin:'0px 0px -48px 0px'});
 $$('.rv').forEach(el=>io.observe(el));
 
-/* hero image drift */
-const heroImg=$('.hero-media img');
+/* ---------- numbers count up ---------- */
+const countIO=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;countIO.unobserve(e.target);
+  const el=e.target,m=el.textContent.match(/^(\D*)([\d,]+)(.*)$/);if(!m)return;
+  const [,pre,num,post]=m,to=+num.replace(/,/g,''),fmt=num.includes(',')?(v=>v.toLocaleString('en-IN')):(v=>String(v)),t0=performance.now(),D=1600;
+  const step=t=>{const p=clamp((t-t0)/D);el.textContent=pre+fmt(Math.round(to*(1-Math.pow(2,-10*p))))+post;if(p<1)requestAnimationFrame(step);else el.textContent=pre+num+post};
+  requestAnimationFrame(step)}),{threshold:.6});
+if(!reduce)$$('.facts dd,.amount>span,.first .amount-sm').forEach(el=>countIO.observe(el));
+
+/* ---------- "who lives here" lights up as you read ---------- */
+const who=$('.who');let whoUpdate=()=>{};
+if(who&&!reduce){
+  const words=who.textContent.trim().split(/\s+/);who.innerHTML=words.map(w=>`<span class="wd">${w}</span>`).join(' ');
+  const spans=$$('.wd',who);
+  whoUpdate=()=>{const r=who.getBoundingClientRect(),p=clamp((innerHeight*.85-r.top)/(innerHeight*.5)),n=Math.round(p*spans.length);spans.forEach((s,i)=>s.classList.toggle('lit',i<n))};
+}
+
+/* ---------- full-screen photo moment ---------- */
+const breath=$('.b-track');let breathUpdate=()=>{};
+if(breath){
+  const stick=$('.b-stick',breath);
+  breathUpdate=()=>{
+    const r=breath.getBoundingClientRect(),p=reduce?1:clamp(-r.top/(r.height-innerHeight));
+    const e=easeOut(clamp(p/.6)),narrow=innerWidth<=860;
+    stick.style.setProperty('--ci',lerp(narrow?26:20,0,e).toFixed(2)+'%');
+    stick.style.setProperty('--cx',lerp(narrow?10:30,0,e).toFixed(2)+'%');
+    stick.style.setProperty('--cr',lerp(4,0,e).toFixed(1)+'px');
+    stick.style.setProperty('--sc',lerp(1.25,1,e).toFixed(3));
+    stick.style.setProperty('--sh',e.toFixed(3));
+    stick.style.setProperty('--to',clamp((p-.42)/.25).toFixed(3));
+  };
+}
 
 /* ---------- a day at StayB ---------- */
 const day=$('.day .track');
@@ -110,9 +198,34 @@ if(route){
   };
 }
 
+/* ---------- cursor, hover previews, magnetic buttons (mouse only) ---------- */
+if(finePointer&&!reduce){
+  root.classList.add('has-cursor');
+  const cur=$('.cursor'),lbl=$('.c-lbl',cur),prev=$('.hover-prev'),prevImg=$('img',prev);
+  let mx=-100,my=-100,cx=-100,cy=-100,px=-100,py=-100;
+  addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY},{passive:true});
+  const loop=()=>{cx=lerp(cx,mx,.22);cy=lerp(cy,my,.22);px=lerp(px,mx,.12);py=lerp(py,my,.12);
+    cur.style.transform=`translate3d(${cx.toFixed(1)}px,${cy.toFixed(1)}px,0)`;
+    prev.style.left=clamp(px+150,130,innerWidth-130).toFixed(1)+'px';prev.style.top=clamp(py,160,innerHeight-160).toFixed(1)+'px';requestAnimationFrame(loop)};
+  requestAnimationFrame(loop);
+  document.addEventListener('pointerover',e=>{
+    const lab=e.target.closest('[data-cursor]'),link=e.target.closest('a,button,summary');
+    cur.classList.toggle('label',!!lab&&!link);lbl.textContent=lab&&!link?lab.dataset.cursor:'';
+    cur.classList.toggle('link',!!link);
+    const img=e.target.closest('a[data-img]');
+    if(img){if(prevImg.getAttribute('src')!==img.dataset.img)prevImg.src=img.dataset.img;prev.classList.add('on')}else prev.classList.remove('on');
+  });
+  document.addEventListener('pointerleave',()=>{cur.style.opacity=0});
+  document.addEventListener('pointerenter',()=>{cur.style.opacity=1});
+  $$('.btn,.nav-cta').forEach(b=>{
+    b.addEventListener('pointermove',e=>{const r=b.getBoundingClientRect();b.style.transform=`translate(${((e.clientX-r.left-r.width/2)*.18).toFixed(1)}px,${((e.clientY-r.top-r.height/2)*.3).toFixed(1)}px)`});
+    b.addEventListener('pointerleave',()=>{b.style.transition='transform .6s cubic-bezier(.22,.8,.18,1)';b.style.transform='';setTimeout(()=>b.style.transition='',600)});
+  });
+}
+
 /* ---------- scroll loop ---------- */
-const fin=$('.final');
-let ticking=false;
+const heroImg=$('.hero-media img'),fin=$('.final');
+let ticking=false,lastY=scrollY,skTimer=0;
 function onScroll(){
   ticking=false;
   const y=scrollY,h=document.documentElement.scrollHeight-innerHeight;
@@ -120,7 +233,10 @@ function onScroll(){
   nav.classList.toggle('s',y>24);
   if(heroImg&&!reduce&&y<innerHeight*1.4)heroImg.style.transform=`translate3d(0,${(-y*.06).toFixed(1)}px,0)`;
   if(dock){const inFinal=fin&&fin.getBoundingClientRect().top<innerHeight*.75;dock.classList.toggle('on',y>innerHeight*.7&&!inFinal)}
-  dayUpdate();galUpdate();walkUpdate();
+  // the photo strip leans slightly with scroll speed, then settles
+  if(strip&&!reduce&&innerWidth>860){const v=y-lastY;strip.style.setProperty('--sk',clamp(-v*.06,-3,3).toFixed(2)+'deg');clearTimeout(skTimer);skTimer=setTimeout(()=>strip.style.setProperty('--sk','0deg'),120)}
+  lastY=y;
+  breathUpdate();dayUpdate();galUpdate();walkUpdate();whoUpdate();
 }
 addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(onScroll)}},{passive:true});
 addEventListener('resize',()=>{galFit();onScroll()});
