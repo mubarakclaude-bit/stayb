@@ -121,17 +121,33 @@ const footer = `<footer><div class="wrap fg"><div><img src="/img/logo-white.png"
 <div><h4>StayB</h4><a href="/#price">Price</a><a href="/#faq">FAQ</a><a href="${MAPS}" rel="noopener">Open in Maps</a><a href="${WA}" rel="noopener">WhatsApp</a></div></div></footer>${dock}<script src="/assets/app.js" defer></script></body></html>`;
 
 // ---------- HOME ----------
-// Brand mark redrawn from the logo PDF (viewBox 0 0 240 145): two houses on a wave, sun top-right.
-const MARK = `<path class="m-house" d="M34 112 V100 L80 54 L128 102"/><path class="m-house" d="M120 86 V70 L162 28 L208 74 V108"/>
-<path class="m-wave" d="M6 108 C40 124 70 138 110 128 C150 118 180 104 234 126"/>`;
+// Illustration kit inspired by the logo (angled gables, a wave, the sun) rather than the logo itself.
+// HOSTEL: a two-gable building, local coords 0..270 wide, ground line at y=200.
+const HOSTEL = (id='') => `<g class="hostel"${id?` id="${id}"`:''}>
+<path class="h-wall" d="M20 204 V122 L68 76 L116 120 V204Z"/>
+<path class="h-wall h-wall2" d="M106 204 V100 L180 28 L250 98 V204Z"/>
+<g class="h-win"><rect x="38" y="134" width="20" height="22" rx="2"/><rect x="78" y="134" width="20" height="22" rx="2"/><rect x="38" y="168" width="20" height="22" rx="2"/><rect x="78" y="168" width="20" height="22" rx="2"/>
+<rect x="128" y="112" width="20" height="22" rx="2"/><rect x="170" y="112" width="20" height="22" rx="2"/><rect x="212" y="112" width="20" height="22" rx="2"/><rect x="128" y="148" width="20" height="22" rx="2"/><rect x="212" y="148" width="20" height="22" rx="2"/></g>
+<rect class="h-door" x="166" y="156" width="28" height="48" rx="3"/>
+<path class="h-roof" d="M6 134 L68 72 L124 128"/>
+<path class="h-roof" d="M96 112 L180 26 L264 110"/>
+</g>`;
+// coconut palm drawn in the same stroke language; origin at the base of the trunk
+const PALM = `<g class="palm"><path class="p-trunk" d="M0 0 C4 -36 2 -74 14 -116"/><g class="p-top" transform="translate(14 -116)">
+<path class="p-leaf" d="M0 0 C-18 -14 -40 -12 -56 4"/><path class="p-leaf" d="M0 0 C-10 -22 -30 -32 -50 -30"/><path class="p-leaf" d="M0 0 C6 -24 22 -36 42 -36"/>
+<path class="p-leaf" d="M0 0 C18 -12 40 -10 56 6"/><path class="p-leaf" d="M0 0 C14 4 26 18 30 34"/><path class="p-leaf" d="M0 0 C-12 6 -22 20 -24 36"/></g></g>`;
+// the sun in the original page style: lit from the top-left, wide soft glow
+const SUN_DEFS = (p) => `<radialGradient id="${p}ball" cx=".36" cy=".34" r=".7"><stop offset="0" stop-color="#fff6b4"/><stop offset=".5" stop-color="#f3d82b"/><stop offset="1" stop-color="#e2c11a"/></radialGradient>
+<radialGradient id="${p}glow"><stop offset="0" stop-color="#f6dd4a" stop-opacity=".55"/><stop offset=".45" stop-color="#f3d82b" stop-opacity=".16"/><stop offset="1" stop-color="#f3d82b" stop-opacity="0"/></radialGradient>`;
 
 // stars for the night sky (deterministic so builds are stable)
 let seed=7; const rnd=()=>((seed=(seed*16807)%2147483647)/2147483647);
-const STARS = Array.from({length:70},()=>`<circle cx="${(rnd()*1440).toFixed(0)}" cy="${(rnd()*300).toFixed(0)}" r="${(rnd()*1.6+.5).toFixed(1)}"/>`).join('');
+const STARS = Array.from({length:80},()=>`<circle cx="${(rnd()*1440).toFixed(0)}" cy="${(rnd()*330).toFixed(0)}" r="${(rnd()*1.6+.5).toFixed(1)}"/>`).join('');
 // Infopark towers with window grids
 const TOWERS=[[1010,250,90,220],[1110,190,110,280],[1232,270,80,200],[1322,220,96,250]];
 const towerBodies = TOWERS.map(([x,y,w,h])=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4"/>`).join('');
 const towerWins = TOWERS.map(([x,y,w,h])=>{let o='';for(let yy=y+18;yy<y+h-40;yy+=22)for(let xx=x+12;xx<x+w-14;xx+=20)o+=`<rect x="${xx}" y="${yy}" width="10" height="12" rx="1.5"/>`;return o}).join('');
+const farTowers = [[40,236,26,64],[70,214,30,86],[104,246,22,54]].map(([x,y,w,h])=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3"/>`).join('');
 
 const home = head({
   title:"Men's Hostel Near Infopark Kochi · 7 Min Walk · ₹7,000 With Food | StayB",
@@ -150,10 +166,20 @@ const home = head({
 <p class="pricenote"><b>₹7,000</b>/month all-in · first month ₹8,000 incl. refundable deposit</p>
 </div>
 <div class="hero-art" aria-hidden="true">
-<svg viewBox="0 0 240 145" class="mark">
-<defs><radialGradient id="glow"><stop offset="0" stop-color="#f3d82b" stop-opacity=".55"/><stop offset="1" stop-color="#f3d82b" stop-opacity="0"/></radialGradient></defs>
-<g class="m-sun"><circle cx="214" cy="24" r="40" fill="url(#glow)"/><circle cx="214" cy="24" r="17" fill="#f3d82b"/></g>
-${MARK}</svg>
+<svg viewBox="40 96 480 360" class="art">
+<defs>${SUN_DEFS('h')}<clipPath id="hclip"><rect x="40" y="96" width="480" height="360" rx="32"/></clipPath><linearGradient id="hsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f3426"/><stop offset="1" stop-color="#3b5a3d"/></linearGradient></defs>
+<g clip-path="url(#hclip)"><rect x="40" y="96" width="480" height="360" fill="url(#hsky)"/>
+<g class="a-sun" transform="translate(418 178)"><circle class="a-glow" r="190" fill="url(#hglow)"/><circle r="58" fill="url(#hball)"/></g>
+<g class="a-far">${farTowers}</g>
+<path class="a-hill1" d="M0 300 C110 262 230 302 350 278 C440 260 505 268 560 258 V460 H0Z"/>
+<g class="a-palm a-palm1" transform="translate(470 352) scale(1.05)">${PALM}</g>
+<g class="a-house" transform="translate(132 168)">${HOSTEL()}</g>
+<g class="a-palm a-palm2" transform="translate(92 372) scale(.78)">${PALM}</g>
+<path class="a-hill2" d="M0 362 C90 340 170 392 282 370 C392 348 470 338 560 358 V460 H0Z"/>
+<path class="a-wave" d="M-10 364 C90 340 170 394 282 372 C392 350 470 340 570 360"/>
+<path class="a-path" d="M312 374 C380 384 452 378 560 388"/>
+</g><rect class="a-frame" x="40.5" y="96.5" width="479" height="359" rx="32"/>
+</svg>
 </div>
 </div>
 <svg class="hills" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70 C240 30 480 100 760 60 C1040 20 1240 80 1440 50 V120 H0Z" fill="#2a4630"/><path d="M0 100 C300 70 560 120 860 92 C1100 70 1300 104 1440 90 V120 H0Z" fill="#162118"/></svg>
@@ -163,28 +189,29 @@ ${MARK}</svg>
 <section class="day" id="day" aria-label="A typical day at StayB"><div class="track"><div class="stick">
 <div class="sky"></div>
 <svg class="scene" viewBox="0 0 1440 560" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+<defs>${SUN_DEFS('d')}</defs>
 <g class="stars" fill="#fff">${STARS}</g>
-<g class="moon"><circle r="26" fill="#f4f1e2"/><circle class="moon-cut" r="24" cx="11" cy="-7"/></g>
-<g class="sunb"><circle r="120" fill="url(#dglow)"/><circle r="44" fill="#f3d82b"/></g>
-<defs><radialGradient id="dglow"><stop offset="0" stop-color="#ffe46b" stop-opacity=".7"/><stop offset="1" stop-color="#ffe46b" stop-opacity="0"/></radialGradient></defs>
-<path class="far" d="M0 420 C200 360 380 400 560 370 C760 336 920 392 1100 360 C1260 334 1360 360 1440 350 V560 H0Z"/>
+<g class="moon"><circle r="70" fill="url(#mglow)"/><circle r="26" fill="#f4f1e2"/><circle class="moon-cut" r="24" cx="11" cy="-7"/></g>
+<defs><radialGradient id="mglow"><stop offset="0" stop-color="#f4f1e2" stop-opacity=".25"/><stop offset="1" stop-color="#f4f1e2" stop-opacity="0"/></radialGradient></defs>
+<g class="sunb"><circle class="s-glow" r="210" fill="url(#dglow)"/><circle r="52" fill="url(#dball)"/></g>
+<path class="far" d="M-900 410 C-600 380 -300 430 0 420 C200 360 380 400 560 370 C760 336 920 392 1100 360 C1260 334 1360 360 1440 350 C1700 330 2000 380 2340 360 V900 H-900Z"/>
 <g class="towers">${towerBodies}</g>
-<path class="ground" d="M0 470 C260 440 520 488 780 462 C1040 436 1260 470 1440 456 V560 H0Z"/>
-<path class="road" d="M250 488 C430 452 620 500 820 470 S1080 452 1170 476"/>
-<path class="shade" d="M0 420 C200 360 380 400 560 370 C760 336 920 392 1100 360 C1260 334 1360 360 1440 350 V560 H0Z"/>
-<g class="house" transform="translate(120 352) scale(1.05)">${MARK}</g>
 <g class="wins">${towerWins}</g>
-<g class="hwins"><rect x="178" y="438" width="16" height="16" rx="2"/><rect x="290" y="412" width="16" height="16" rx="2"/></g>
+<g class="s-palm" transform="translate(372 470) scale(1.1)">${PALM}</g>
+<g class="s-house" transform="translate(70 262) scale(.98)">${HOSTEL()}</g>
+<g class="s-palm" transform="translate(40 474) scale(.85)">${PALM}</g>
+<path class="ground" d="M-900 470 C-600 456 -300 480 0 464 C260 446 520 488 780 462 C1040 436 1260 470 1440 456 C1700 444 2000 474 2340 462 V900 H-900Z"/>
+<path class="g-wave" d="M-900 470 C-600 456 -300 480 0 464 C260 446 520 488 780 462 C1040 436 1260 470 1440 456 C1700 444 2000 474 2340 462"/>
+<path class="road" d="M246 470 C430 456 620 500 820 474 S1080 456 1170 476"/>
 <g class="walker"><circle r="9" fill="#f3d82b"/><circle r="18" fill="none" stroke="#f3d82b" stroke-opacity=".45"/></g>
 </svg>
-<div class="wrap day-ui">
-<div class="panel">
-<div class="eyebrow">A day at StayB</div>
-<div class="clock" aria-live="off">06:00</div>
+<div class="day-bar">
+<div class="wrap bar-grid">
+<div class="bar-time"><div class="eyebrow">A day at StayB</div><div class="clock" aria-live="off">06:00</div></div>
 <div class="evt"><h3></h3><p></p></div>
 </div>
+<div class="wrap"><div class="tl"><div class="tl-fill"></div></div><ol class="tl-ticks"></ol></div>
 </div>
-<div class="wrap tl-wrap"><div class="tl"><div class="tl-fill"></div></div><ol class="tl-ticks"></ol></div>
 </div></div></section>
 
 <section class="price" id="price"><div class="wrap">
@@ -219,7 +246,7 @@ ${MARK}</svg>
 <path class="rbase" d="M90 220 C260 220 300 96 470 120 S720 238 860 160 S1060 100 1110 118"/>
 <path class="rdone" d="M90 220 C260 220 300 96 470 120 S720 238 860 160 S1060 100 1110 118"/>
 <g class="mins"></g>
-<g transform="translate(36 160) scale(.46)" class="rhouse">${MARK}</g>
+<g transform="translate(33 162) scale(.32)" class="rhouse">${HOSTEL()}</g>
 <g class="rtower"><rect x="1088" y="40" width="46" height="64" rx="5"/><rect x="1138" y="62" width="34" height="42" rx="5"/></g>
 <text x="90" y="268" text-anchor="middle" class="rl">StayB</text><text x="1112" y="146" text-anchor="middle" class="rl">Infopark Ph. 2</text>
 <g class="rwalker"><circle r="10" fill="#f3d82b"/><circle r="20" fill="none" stroke="#f3d82b" stroke-opacity=".4"/></g>
@@ -228,7 +255,7 @@ ${MARK}</svg>
 <path class="rbase" d="M80 520 C80 440 240 440 240 360 S80 280 80 200 S240 120 240 70"/>
 <path class="rdone" d="M80 520 C80 440 240 440 240 360 S80 280 80 200 S240 120 240 70"/>
 <g class="mins"></g>
-<g transform="translate(36 500) scale(.38)" class="rhouse">${MARK}</g>
+<g transform="translate(26 456) scale(.3)" class="rhouse">${HOSTEL()}</g>
 <g class="rtower"><rect x="214" y="-4" width="40" height="56" rx="5"/><rect x="258" y="16" width="30" height="36" rx="5"/></g>
 <text x="80" y="580" text-anchor="middle" class="rl">StayB</text><text x="200" y="34" text-anchor="end" class="rl">Infopark Ph. 2</text>
 <g class="rwalker"><circle r="10" fill="#f3d82b"/><circle r="20" fill="none" stroke="#f3d82b" stroke-opacity=".4"/></g>

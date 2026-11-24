@@ -63,15 +63,38 @@ nav.top .btn{justify-self:end}
 .pricenote{margin-top:var(--s3);font-size:.95rem;color:var(--mute)}
 .pricenote b{color:var(--cream);font-size:1.1rem}
 .hero-art{display:flex;justify-content:center}
-.mark{width:100%;max-width:460px;overflow:visible}
-.m-house,.m-wave{fill:none;stroke-linejoin:miter}
-.m-house{stroke:var(--cream);stroke-width:11}
-.m-wave{stroke:#6b9a62;stroke-width:11;stroke-linecap:round}
-.hero .m-house,.hero .m-wave{stroke-dasharray:400;stroke-dashoffset:400;animation:draw 1.6s var(--ease) .35s forwards}
-.hero .m-wave{animation-delay:.75s}
-@keyframes draw{to{stroke-dashoffset:0}}
-.hero .m-sun{transform-box:fill-box;transform-origin:center;opacity:0;animation:rise 1.4s var(--ease) 1.1s forwards}
-@keyframes rise{from{opacity:0;transform:translateY(26px) scale(.6)}to{opacity:1;transform:none}}
+.art{width:100%;max-width:560px;filter:drop-shadow(0 40px 60px rgba(0,0,0,.35))}
+/* illustration kit (shared) */
+.h-wall{fill:#2c4732}.h-wall2{fill:#33523a}
+.h-roof{fill:none;stroke:var(--cream);stroke-width:10;stroke-linejoin:miter;stroke-linecap:square}
+.h-win rect{fill:#f3d82b}
+.h-door{fill:#182a1d}
+.p-trunk{fill:none;stroke:#7c8a5a;stroke-width:7;stroke-linecap:round}
+.p-leaf{fill:none;stroke:#6b9a62;stroke-width:7;stroke-linecap:round}
+/* hero composition */
+.a-far rect{fill:#2f4a36;opacity:.75}
+.a-frame{fill:none;stroke:rgba(246,243,232,.14)}
+.a-hill1{fill:#2a4630}
+.a-hill2{fill:#1c3122}
+.a-wave{fill:none;stroke:#6b9a62;stroke-width:9;stroke-linecap:round}
+.a-path{fill:none;stroke:#e9e2c4;stroke-width:4;stroke-dasharray:2 12;stroke-linecap:round;opacity:.6}
+.hero .a-sun{animation:sunrise 1.6s var(--ease) .2s both}
+.hero .a-sun > *{transform-box:fill-box;transform-origin:center}
+.hero .a-glow{animation:breathe 6s ease-in-out 1.8s infinite}
+@keyframes sunrise{from{opacity:0;translate:0 70px}to{opacity:1;translate:0 0}}
+@keyframes breathe{50%{transform:scale(1.12);opacity:.85}}
+.hero .a-house{animation:lift 1.1s var(--ease) .45s both}
+@keyframes lift{from{opacity:0;translate:0 24px}}
+.hero .h-win rect{opacity:0;animation:winOn .5s ease forwards}
+.hero .h-win rect:nth-child(1){animation-delay:1.3s}.hero .h-win rect:nth-child(2){animation-delay:1.45s}.hero .h-win rect:nth-child(3){animation-delay:1.6s}
+.hero .h-win rect:nth-child(4){animation-delay:1.75s}.hero .h-win rect:nth-child(5){animation-delay:1.9s}.hero .h-win rect:nth-child(6){animation-delay:2.05s}
+.hero .h-win rect:nth-child(7){animation-delay:2.2s}.hero .h-win rect:nth-child(8){animation-delay:2.35s}.hero .h-win rect:nth-child(9){animation-delay:2.5s}
+@keyframes winOn{to{opacity:1}}
+.hero .h-win rect:nth-child(3n){animation-name:winDim}
+@keyframes winDim{to{opacity:.35}}
+.hero .p-top{transform-box:fill-box;transform-origin:50% 100%;animation:sway 5s ease-in-out infinite}
+.hero .a-palm2 .p-top{animation-delay:-2s}
+@keyframes sway{50%{rotate:4deg}}
 .hills{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:120px;z-index:1}
 
 /* marquee */
@@ -83,35 +106,31 @@ nav.top .btn{justify-self:end}
 /* ============ a day at StayB ============ */
 .day{padding:0;background:#0e1526}
 .day .track{height:600vh;position:relative}
-.day .stick{position:sticky;top:0;height:100svh;overflow:hidden}
+.day .stick{position:sticky;top:0;height:100svh;overflow:hidden;--uih:240px}
 .sky{position:absolute;inset:0}
-.scene{position:absolute;left:0;right:0;bottom:84px;width:100%;height:auto}
-.day .stick:after{content:"";position:absolute;left:0;right:0;bottom:0;height:86px;background:var(--gnd,#1c3122);z-index:1}
+.scene{position:absolute;left:0;top:0;width:100%;height:calc(100% - var(--uih) + 2px);overflow:visible}
 .scene .far{fill:#2c4b34}
 .scene .towers{fill:#24372b}
 .scene .ground{fill:#1c3122}
-.scene .road{fill:none;stroke:#d8cfa6;stroke-width:5;stroke-dasharray:2 14;stroke-linecap:round;opacity:.55}
-.scene .house .m-house{stroke:var(--cream)}
-.scene .shade{fill:#08101f;opacity:0;pointer-events:none}
+.scene .g-wave{fill:none;stroke:#6b9a62;stroke-width:6;stroke-linecap:round;opacity:.9}
+.scene .road{fill:none;stroke:#d8cfa6;stroke-width:5;stroke-dasharray:2 14;stroke-linecap:round;opacity:.6}
 .scene .wins rect{fill:#cfe0e6;opacity:.18}
-.scene .hwins rect{fill:#f3d82b;opacity:0}
 .scene .stars{opacity:0}
 .scene .moon{opacity:0}
 .scene .moon-cut{fill:#141c33}
 .scene .walker{opacity:0}
-.day-ui{position:relative;z-index:3;padding-top:clamp(96px,14vh,140px)}
-.panel{max-width:440px;padding:var(--s4);border-radius:24px;background:rgba(12,20,16,.5);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.clock{font:800 clamp(3.6rem,8vw,6rem)/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.04em;color:var(--sun);margin:var(--s3) 0 var(--s2);font-variant-numeric:tabular-nums}
-.evt{min-height:128px}
-.evt h3{font-size:clamp(1.5rem,2.6vw,2rem);margin-bottom:10px}
-.evt p{color:#e3ebe2;font-size:1.02rem}
+.day-bar{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:var(--s4) 0 var(--s3);background:var(--gnd,#1c3122)}
+.bar-grid{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--s5);align-items:end;margin-bottom:var(--s3)}
+.clock{font:800 clamp(3.2rem,6vw,5rem)/.9 'Bricolage Grotesque',sans-serif;letter-spacing:-.04em;color:var(--sun);margin-top:var(--s2);font-variant-numeric:tabular-nums}
+.evt{max-width:640px;min-height:104px}
+.evt h3{font-size:clamp(1.4rem,2.4vw,1.9rem);margin-bottom:8px}
+.evt p{color:#dbe5da;font-size:1rem}
 .evt.swap{animation:swap .5s var(--ease)}
 @keyframes swap{from{opacity:0;transform:translateY(10px)}}
-.tl-wrap{position:absolute;left:0;right:0;bottom:22px;z-index:3}
-.tl{height:4px;border-radius:4px;background:rgba(255,255,255,.18);overflow:hidden}
+.tl{height:4px;border-radius:4px;background:rgba(255,255,255,.16);overflow:hidden}
 .tl-fill{height:100%;width:0;background:var(--sun)}
-.tl-ticks{position:relative;height:40px;margin-top:10px}
-.tl-ticks li{position:absolute;top:0;transform:translateX(-50%);font-size:.75rem;color:rgba(255,255,255,.65);text-align:center;white-space:nowrap;line-height:1.3;transition:color .3s}
+.tl-ticks{position:relative;height:36px;margin-top:10px}
+.tl-ticks li{position:absolute;top:0;transform:translateX(-50%);font-size:.75rem;color:rgba(255,255,255,.6);text-align:center;white-space:nowrap;line-height:1.3;transition:color .3s}
 .tl-ticks li b{display:block;font-weight:600}
 .tl-ticks li.on{color:var(--sun)}
 .tl-ticks li:first-child{transform:none}.tl-ticks li:last-child{transform:translateX(-100%)}
@@ -153,7 +172,6 @@ nav.top .btn{justify-self:end}
 .mins circle{fill:#15271a;stroke:rgba(246,243,232,.5);stroke-width:2}
 .mins circle.on{fill:var(--sun);stroke:var(--sun)}
 .mins text{fill:var(--mute);font:600 15px 'Inter',sans-serif;text-anchor:middle}
-.rhouse .m-house,.rhouse .m-wave{stroke-width:12}
 .rtower rect{fill:var(--cream)}
 .rl{fill:var(--cream);font:700 22px 'Bricolage Grotesque',sans-serif}
 .timer{position:absolute;top:var(--s4);left:var(--s4)}
@@ -249,7 +267,9 @@ footer a:hover{color:var(--sun)}
   .hero{padding:104px 0 120px}
   .hero-grid{grid-template-columns:1fr}
   .hero-art{order:-1;justify-content:flex-start}
-  .mark{max-width:300px}
+  .art{max-width:420px}
+  .bar-grid{grid-template-columns:1fr;gap:var(--s2);align-items:start}
+  .scene{width:280%;height:auto;top:auto;bottom:calc(var(--uih) - 2px);will-change:transform}
   .pgrid,.wgrid,.parents,footer .fg{grid-template-columns:1fr}
   .parents{padding:var(--s4);gap:var(--s3)}
   .gg figure:nth-child(n){grid-column:span 12;aspect-ratio:4/3}
@@ -259,7 +279,10 @@ footer a:hover{color:var(--sun)}
 @media (max-width:560px){
   :root{--btn-h:52px}
   .cta .btn{flex:1 1 100%}
-  .mark{max-width:220px}
+  .art{max-width:300px}
+  .day-bar{padding:var(--s3) 0 var(--s2)}
+  .clock{margin-top:12px}
+  .evt{min-height:120px}
   .hero h1{font-size:clamp(3rem,16vw,4.4rem)}
   .chips li{height:32px;font-size:.82rem;padding:0 12px}
   .rg{grid-template-columns:1fr}
@@ -271,14 +294,10 @@ footer a:hover{color:var(--sun)}
   .rv-route .rl{font-size:20px}
   .inc{grid-template-columns:1fr 1fr}
   .inc li{padding:16px}
-  .panel{padding:var(--s3)}
-  .evt{min-height:112px}
   .tl-ticks li{font-size:0;width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35);top:2px}
   .tl-ticks li.on{background:var(--sun)}
   .tl-ticks li:first-child,.tl-ticks li:last-child{transform:translateX(-50%)}
   .tl-ticks{height:16px}
-  .day-ui{padding-top:88px}
-  .scene{width:280%;right:auto;will-change:transform}
   .dock{left:16px;right:16px;transform:translateY(140%)}
   .dock.on{transform:none}
   .dock .btn{flex:1}
