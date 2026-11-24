@@ -44,7 +44,7 @@ const LANDINGS = [
    h1:'Looking for a <em>PG for men</em> near Infopark?',
    intro:'A paying guest stay near Infopark usually means paying separately for food, WiFi and laundry, then still commuting. StayB bundles everything into one monthly price and puts you a 7-minute walk from Phase 2.',
    sections:[
-    ['One price, no add-ons','Breakfast, packed lunch, dinner, WiFi, laundry and ironing are included in ₹7,000 a month. No mess bills and no WiFi add-ons. Use the calculator on our home page to compare against your current spend.'],
+    ['One price, no add-ons','Breakfast, packed lunch, dinner, WiFi, laundry and ironing are included in ₹7,000 a month. No mess bills and no WiFi add-ons.'],
     ['PG vs hostel at StayB','Unlike a typical PG with a single owner\'s rules, StayB runs as a hostel with written, predictable rules and a community of Infopark professionals, so you know exactly what to expect before you move in.'],
    ], bullets:['Everything included in one price','Walk to Infopark Phase 2','Fully refundable deposit','Written house rules','Freshers and experienced staff welcome'],
    faq:[FAQ[1],FAQ[2],FAQ[3]] },
@@ -62,7 +62,7 @@ const LANDINGS = [
    h1:'An affordable hostel in <em>Kakkanad</em>, where the rent covers it all.',
    intro:'The real cost of a cheap room is rarely the rent. Add food, WiFi, laundry and daily travel and the number grows fast. StayB is priced as one number, ₹7,000 a month, with a 7-minute walk to Infopark.',
    sections:[
-    ['Count the whole bill','Our home page has a monthly cost calculator: enter what you pay now for rent, food and travel and see how it compares with StayB all-in.'],
+    ['Count the whole bill','Add up what you pay now for rent, food, WiFi, laundry and travel, then compare it with StayB\'s single all-in price.'],
     ['Zero commute expense','Walking to Infopark Phase 2 means travel costs nothing, and you save the time as well.'],
    ], bullets:['₹7,000/month all-inclusive','First month ₹8,000 including deposit and admission','No commute cost','No mess or WiFi extras'],
    faq:[FAQ[1],FAQ[3],FAQ[0]] },
@@ -101,194 +101,187 @@ function head({title,desc,path,ld,extra=''}){
   return `<!doctype html><html lang="en-IN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${title}</title><meta name="description" content="${esc(desc)}">
 <link rel="canonical" href="${BASE}${path}">
-<meta name="theme-color" content="#162118"><meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="theme-color" content="#0f1712"><meta name="robots" content="index,follow,max-image-preview:large">
 <meta name="geo.region" content="IN-KL"><meta name="geo.placename" content="Kakkanad, Kochi">
 <meta property="og:type" content="website"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}"><meta property="og:url" content="${BASE}${path}"><meta property="og:image" content="${BASE}/img/p2.jpg"><meta property="og:locale" content="en_IN">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/img/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css">${extra}
 <script type="application/ld+json">${JSON.stringify(ld)}</script></head><body>
-<div id="bar"></div><div id="glow"></div>`;
+<div class="progress" aria-hidden="true"></div>`;
 }
-const nav = `<nav class="top"><div class="wrap"><a href="/" aria-label="StayB home"><img src="/img/logo-white.png" alt="StayB men's hostel logo" width="105" height="38"></a>
-<ul><li><a href="/#day">A day here</a></li><li><a href="/#price">Price</a></li><li><a href="/#photos">Photos</a></li><li><a href="/#location">Location</a></li><li><a href="/#faq">FAQ</a></li></ul>
-<a class="btn sun sm" href="${WA}" rel="noopener">Check Availability</a></div></nav>`;
-const dock = `<div class="dock"><a class="btn sun sm" href="${WA}" rel="noopener">WhatsApp us</a><a class="btn line sm" href="tel:${PHONE}">Call ${PHONE_DISP}</a></div>`;
-const footer = `<footer><div class="wrap fg"><div><img src="/img/logo-white.png" alt="StayB" width="121" height="44"><p>StayB Men's Hostel<br>Kakkanad, Kochi, Kerala · 7 min from Infopark Phase 2<br>Call <a style="display:inline" href="tel:${PHONE}">${PHONE_DISP}</a></p></div>
+const ARROW = `<svg class="arr" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4"/></svg>`;
+const nav = `<header class="nav"><div class="wrap nav-in"><a class="brand" href="/" aria-label="StayB home"><img src="/img/logo-white.png" alt="StayB men's hostel logo" width="105" height="38"></a>
+<nav aria-label="Primary"><ul><li><a href="/#day">A day here</a></li><li><a href="/#price">Price</a></li><li><a href="/#photos">Photos</a></li><li><a href="/#location">Location</a></li><li><a href="/#faq">FAQ</a></li></ul></nav>
+<a class="nav-cta" href="${WA}" rel="noopener">Check availability ${ARROW}</a></div></header>`;
+const dock = `<div class="dock"><a class="btn primary" href="${WA}" rel="noopener">WhatsApp us</a><a class="btn ghost" href="tel:${PHONE}">Call ${PHONE_DISP}</a></div>`;
+const footer = `<footer class="foot"><div class="wrap">
+<div class="foot-top"><img src="/img/logo-white.png" alt="StayB" width="121" height="44"><p class="foot-line">A men's hostel, 7 minutes on foot from Infopark Phase 2.</p></div>
+<div class="foot-grid">
+<div><h4>Visit</h4><p>StayB Men's Hostel<br>Kakkanad, Kochi, Kerala<br>7 min from Infopark Phase 2</p><p><a href="tel:${PHONE}">Call ${PHONE_DISP}</a></p></div>
 <div><h4>Find a hostel</h4>${LANDINGS.map(l=>`<a href="/${l.slug}">${l.kw}</a>`).join('')}</div>
-<div><h4>StayB</h4><a href="/#price">Price</a><a href="/#faq">FAQ</a><a href="${MAPS}" rel="noopener">Open in Maps</a><a href="${WA}" rel="noopener">WhatsApp</a></div></div></footer>${dock}<script src="/assets/app.js" defer></script></body></html>`;
+<div><h4>StayB</h4><a href="/#price">Price</a><a href="/#faq">FAQ</a><a href="${MAPS}" rel="noopener">Open in Maps</a><a href="${WA}" rel="noopener">WhatsApp</a></div>
+</div>
+<p class="foot-base">© StayB · Kakkanad, Kochi</p>
+</div></footer>${dock}<script src="/assets/app.js" defer></script></body></html>`;
+
+// thin-line diagrams
+const SUNPATH = `<svg class="sunpath" viewBox="0 0 600 270" aria-hidden="true">
+<path class="sp-arc" d="M40 220 A260 170 0 0 1 560 220"/>
+<path class="sp-trail" d="M40 220 A260 170 0 0 1 560 220" pathLength="1"/>
+<line class="sp-horizon" x1="0" y1="220" x2="600" y2="220"/>
+${[[9,'09:00'],[12,'12:00'],[15,'15:00']].map(([h,l])=>{const u=(h-6.25)/12,th=Math.PI*(1-u),x=300+260*Math.cos(th),y=220-170*Math.sin(th),ox=Math.cos(th)*26,oy=-Math.sin(th)*26;return `<circle class="sp-tick" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.5"/><text class="sp-lbl" x="${(x+ox).toFixed(1)}" y="${(y+oy+4).toFixed(1)}" text-anchor="${Math.abs(ox)<6?'middle':ox<0?'end':'start'}">${l}</text>`}).join('')}
+<text class="sp-lbl" x="40" y="246" text-anchor="middle">Sunrise 06:15</text><text class="sp-lbl" x="560" y="246" text-anchor="middle">Sunset 18:15</text>
+<g class="sp-moon"><circle r="9"/></g>
+<g class="sp-sun"><circle class="sp-halo" r="22"/><circle class="sp-core" r="9"/></g>
+</svg>`;
+const ROUTE_H = `<svg class="rsvg rh" viewBox="0 0 1200 260" role="img" aria-label="Diagram of the 7-minute walk from StayB to Infopark Phase 2">
+<path class="rbase" d="M80 190 C260 190 300 80 470 100 S720 210 860 140 S1060 80 1120 96"/>
+<path class="rdone" d="M80 190 C260 190 300 80 470 100 S720 210 860 140 S1060 80 1120 96"/>
+<g class="mins"></g>
+<rect class="rnode" x="72" y="182" width="16" height="16"/><rect class="rnode" x="1112" y="88" width="16" height="16"/>
+<text x="80" y="236" text-anchor="middle" class="rl">StayB</text><text x="1120" y="60" text-anchor="middle" class="rl">Infopark Phase 2</text>
+<g class="rwalker"><circle r="6"/><circle class="rw-ring" r="14"/></g>
+</svg>`;
+const ROUTE_V = `<svg class="rsvg rvert" data-v="1" viewBox="0 0 320 600" aria-hidden="true">
+<path class="rbase" d="M80 530 C80 450 240 450 240 370 S80 290 80 210 S240 130 240 70"/>
+<path class="rdone" d="M80 530 C80 450 240 450 240 370 S80 290 80 210 S240 130 240 70"/>
+<g class="mins"></g>
+<rect class="rnode" x="72" y="522" width="16" height="16"/><rect class="rnode" x="232" y="62" width="16" height="16"/>
+<text x="80" y="572" text-anchor="middle" class="rl">StayB</text><text x="240" y="40" text-anchor="middle" class="rl">Infopark Phase 2</text>
+<g class="rwalker"><circle r="6"/><circle class="rw-ring" r="14"/></g>
+</svg>`;
+const MOMENTS = [
+  ['06:00','Wake up to green views.','Coconut palms outside, a quiet start. No traffic to plan around.'],
+  ['07:30','Breakfast is ready.','Laundry and ironing are handled too, so your shirt is ready for the day.'],
+  ['08:45','Seven minutes to your desk.','Walk to Infopark Phase 2 with your packed lunch. No bus, no auto, no fuel. At your desk before nine.'],
+  ['13:00','Lunch from home, at your desk.','A packed lunch goes with you every day, already paid for in the rent.'],
+  ['18:20','Home before the lights come on.','Log off and walk back. Seven minutes later you are home.'],
+  ['19:30','Dinner is on the table.','Eat, call home, catch up on WiFi. No cooking, no ordering in.'],
+  ['23:00','Quiet hours from 11 PM.','No fixed curfew. You carry your own key, and everyone gets their rest.']];
 
 // ---------- HOME ----------
-// Illustration kit inspired by the logo (angled gables, a wave, the sun) rather than the logo itself.
-// HOSTEL: a two-gable building, local coords 0..270 wide, ground line at y=200.
-const HOSTEL = (id='') => `<g class="hostel"${id?` id="${id}"`:''}>
-<path class="h-wall" d="M20 204 V122 L68 76 L116 120 V204Z"/>
-<path class="h-wall h-wall2" d="M106 204 V100 L180 28 L250 98 V204Z"/>
-<g class="h-win"><rect x="38" y="134" width="20" height="22" rx="2"/><rect x="78" y="134" width="20" height="22" rx="2"/><rect x="38" y="168" width="20" height="22" rx="2"/><rect x="78" y="168" width="20" height="22" rx="2"/>
-<rect x="128" y="112" width="20" height="22" rx="2"/><rect x="170" y="112" width="20" height="22" rx="2"/><rect x="212" y="112" width="20" height="22" rx="2"/><rect x="128" y="148" width="20" height="22" rx="2"/><rect x="212" y="148" width="20" height="22" rx="2"/></g>
-<rect class="h-door" x="166" y="156" width="28" height="48" rx="3"/>
-<path class="h-roof" d="M6 134 L68 72 L124 128"/>
-<path class="h-roof" d="M96 112 L180 26 L264 110"/>
-</g>`;
-// coconut palm drawn in the same stroke language; origin at the base of the trunk
-const PALM = `<g class="palm"><path class="p-trunk" d="M0 0 C4 -36 2 -74 14 -116"/><g class="p-top" transform="translate(14 -116)">
-<path class="p-leaf" d="M0 0 C-18 -14 -40 -12 -56 4"/><path class="p-leaf" d="M0 0 C-10 -22 -30 -32 -50 -30"/><path class="p-leaf" d="M0 0 C6 -24 22 -36 42 -36"/>
-<path class="p-leaf" d="M0 0 C18 -12 40 -10 56 6"/><path class="p-leaf" d="M0 0 C14 4 26 18 30 34"/><path class="p-leaf" d="M0 0 C-12 6 -22 20 -24 36"/></g></g>`;
-// the sun in the original page style: lit from the top-left, wide soft glow
-const SUN_DEFS = (p) => `<radialGradient id="${p}ball" cx=".36" cy=".34" r=".7"><stop offset="0" stop-color="#fff6b4"/><stop offset=".5" stop-color="#f3d82b"/><stop offset="1" stop-color="#e2c11a"/></radialGradient>
-<radialGradient id="${p}glow"><stop offset="0" stop-color="#f6dd4a" stop-opacity=".55"/><stop offset=".45" stop-color="#f3d82b" stop-opacity=".16"/><stop offset="1" stop-color="#f3d82b" stop-opacity="0"/></radialGradient>`;
-
-// stars for the night sky (deterministic so builds are stable)
-let seed=7; const rnd=()=>((seed=(seed*16807)%2147483647)/2147483647);
-const STARS = Array.from({length:80},()=>`<circle cx="${(rnd()*1440).toFixed(0)}" cy="${(rnd()*330).toFixed(0)}" r="${(rnd()*1.6+.5).toFixed(1)}"/>`).join('');
-// Infopark towers with window grids
-const TOWERS=[[1010,250,90,220],[1110,190,110,280],[1232,270,80,200],[1322,220,96,250]];
-const towerBodies = TOWERS.map(([x,y,w,h])=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4"/>`).join('');
-const towerWins = TOWERS.map(([x,y,w,h])=>{let o='';for(let yy=y+18;yy<y+h-40;yy+=22)for(let xx=x+12;xx<x+w-14;xx+=20)o+=`<rect x="${xx}" y="${yy}" width="10" height="12" rx="1.5"/>`;return o}).join('');
-const farTowers = [[40,236,26,64],[70,214,30,86],[104,246,22,54]].map(([x,y,w,h])=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3"/>`).join('');
-
 const home = head({
   title:"Men's Hostel Near Infopark Kochi · 7 Min Walk · ₹7,000 With Food | StayB",
   desc:"StayB men's hostel in Kakkanad, 7-minute walk to Infopark Phase 2, Kochi. ₹7,000/month with 3 meals, WiFi, laundry and ironing. Beds available now.",
   path:'/', ld:{...lodging,"@graph":[...lodging["@graph"],faqLd(FAQ)]},
-  extra:`<link rel="preload" as="image" href="/img/logo-white.png">`
+  extra:`<link rel="preload" as="image" href="/img/p2.jpg">`
 }) + nav + `
-<header class="hero">
-<div class="wrap hero-grid">
+<main>
+<section class="hero">
+<div class="wrap hero-in">
 <div class="hero-copy">
-<div class="eyebrow">Men's hostel · Kakkanad, Kochi</div>
-<h1><span><i>Walk to</i></span><span><i>Infopark.</i></span></h1>
+<p class="kicker">Men's hostel · Kakkanad, Kochi</p>
+<h1 class="display"><span class="ln"><span>Walk to</span></span><span class="ln"><span><em>Infopark.</em></span></span></h1>
 <p class="lead">7 minutes from your desk. Three meals a day, WiFi, laundry and ironing, all in one price.</p>
-<ul class="chips"><li>Breakfast, lunch &amp; dinner</li><li>WiFi</li><li>Laundry &amp; ironing</li><li>Own key, no curfew</li></ul>
-<div class="cta"><a class="btn sun" href="${WA}" rel="noopener">Check Availability <span aria-hidden="true">→</span></a><a class="btn line" href="tel:${PHONE}">Call ${PHONE_DISP}</a></div>
-<p class="pricenote"><b>₹7,000</b>/month all-in · first month ₹8,000 incl. refundable deposit</p>
+<div class="actions"><a class="btn primary" href="${WA}" rel="noopener">Check availability ${ARROW}</a><a class="btn ghost" href="tel:${PHONE}">Call ${PHONE_DISP}</a></div>
+<p class="note">First month ₹8,000, including a refundable deposit.</p>
 </div>
-<div class="hero-art" aria-hidden="true">
-<svg viewBox="40 96 480 360" class="art">
-<defs>${SUN_DEFS('h')}<clipPath id="hclip"><rect x="40" y="96" width="480" height="360" rx="32"/></clipPath><linearGradient id="hsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f3426"/><stop offset="1" stop-color="#3b5a3d"/></linearGradient></defs>
-<g clip-path="url(#hclip)"><rect x="40" y="96" width="480" height="360" fill="url(#hsky)"/>
-<g class="a-sun" transform="translate(418 178)"><circle class="a-glow" r="190" fill="url(#hglow)"/><circle r="58" fill="url(#hball)"/></g>
-<g class="a-far">${farTowers}</g>
-<path class="a-hill1" d="M0 300 C110 262 230 302 350 278 C440 260 505 268 560 258 V460 H0Z"/>
-<g class="a-palm a-palm1" transform="translate(470 352) scale(1.05)">${PALM}</g>
-<g class="a-house" transform="translate(132 168)">${HOSTEL()}</g>
-<g class="a-palm a-palm2" transform="translate(92 372) scale(.78)">${PALM}</g>
-<path class="a-hill2" d="M0 362 C90 340 170 392 282 370 C392 348 470 338 560 358 V460 H0Z"/>
-<path class="a-wave" d="M-10 364 C90 340 170 394 282 372 C392 350 470 340 570 360"/>
-<path class="a-path" d="M312 374 C380 384 452 378 560 388"/>
-</g><rect class="a-frame" x="40.5" y="96.5" width="479" height="359" rx="32"/>
-</svg>
+<figure class="hero-media"><div class="frame"><img src="/img/p2.jpg" alt="Laptop on the StayB balcony overlooking coconut palms and the Kakkanad skyline" width="720" height="720" fetchpriority="high"></div><figcaption>The balcony, looking over Kakkanad</figcaption></figure>
 </div>
-</div>
-<svg class="hills" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70 C240 30 480 100 760 60 C1040 20 1240 80 1440 50 V120 H0Z" fill="#2a4630"/><path d="M0 100 C300 70 560 120 860 92 C1100 70 1300 104 1440 90 V120 H0Z" fill="#162118"/></svg>
-</header>
-<div class="marq" aria-hidden="true"><div>${Array(2).fill('<span>TCS</span><b>●</b><span>INFOSYS</span><b>●</b><span>UST</span><b>●</b><span>INFOPARK PHASE 2</span><b>●</b><span>KAKKANAD</span><b>●</b><span>7 MIN WALK</span><b>●</b><span>FRESHERS · INTERNS · IT PROFESSIONALS</span><b>●</b>').join('')}</div></div>
+<div class="wrap"><dl class="facts">
+<div><dt>Walk to Infopark Phase 2</dt><dd>7 min</dd></div>
+<div><dt>All-in, every month</dt><dd>₹7,000</dd></div>
+<div><dt>Breakfast, lunch &amp; dinner</dt><dd>3 meals</dd></div>
+<div><dt>Own key, no curfew</dt><dd>24 h</dd></div>
+</dl></div>
+</section>
 
-<section class="day" id="day" aria-label="A typical day at StayB"><div class="track"><div class="stick">
-<div class="sky"></div>
-<svg class="scene" viewBox="0 0 1440 560" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
-<defs>${SUN_DEFS('d')}</defs>
-<g class="stars" fill="#fff">${STARS}</g>
-<g class="moon"><circle r="70" fill="url(#mglow)"/><circle r="26" fill="#f4f1e2"/><circle class="moon-cut" r="24" cx="11" cy="-7"/></g>
-<defs><radialGradient id="mglow"><stop offset="0" stop-color="#f4f1e2" stop-opacity=".25"/><stop offset="1" stop-color="#f4f1e2" stop-opacity="0"/></radialGradient></defs>
-<g class="sunb"><circle class="s-glow" r="210" fill="url(#dglow)"/><circle r="52" fill="url(#dball)"/></g>
-<path class="far" d="M-900 410 C-600 380 -300 430 0 420 C200 360 380 400 560 370 C760 336 920 392 1100 360 C1260 334 1360 360 1440 350 C1700 330 2000 380 2340 360 V900 H-900Z"/>
-<g class="towers">${towerBodies}</g>
-<g class="wins">${towerWins}</g>
-<g class="s-palm" transform="translate(372 470) scale(1.1)">${PALM}</g>
-<g class="s-house" transform="translate(70 262) scale(.98)">${HOSTEL()}</g>
-<g class="s-palm" transform="translate(40 474) scale(.85)">${PALM}</g>
-<path class="ground" d="M-900 470 C-600 456 -300 480 0 464 C260 446 520 488 780 462 C1040 436 1260 470 1440 456 C1700 444 2000 474 2340 462 V900 H-900Z"/>
-<path class="g-wave" d="M-900 470 C-600 456 -300 480 0 464 C260 446 520 488 780 462 C1040 436 1260 470 1440 456 C1700 444 2000 474 2340 462"/>
-<path class="road" d="M246 470 C430 456 620 500 820 474 S1080 456 1170 476"/>
-<g class="walker"><circle r="9" fill="#f3d82b"/><circle r="18" fill="none" stroke="#f3d82b" stroke-opacity=".45"/></g>
-</svg>
-<div class="day-bar">
-<div class="wrap bar-grid">
-<div class="bar-time"><div class="eyebrow">A day at StayB</div><div class="clock" aria-live="off">06:00</div></div>
-<div class="evt"><h3></h3><p></p></div>
-</div>
-<div class="wrap"><div class="tl"><div class="tl-fill"></div></div><ol class="tl-ticks"></ol></div>
-</div>
-</div></div></section>
+<div class="ticker" aria-hidden="true"><div>${Array(2).fill('<span>Home to people from</span><b>TCS</b><i></i><b>Infosys</b><i></i><b>UST</b><i></i><span>and other Infopark companies</span><i></i><span>Freshers · Interns · IT professionals</span><i></i>').join('')}</div></div>
 
-<section class="price" id="price"><div class="wrap">
-<div class="shead rv"><div class="eyebrow">Pricing</div><h2>One price. Everything in.</h2></div>
-<div class="pgrid">
-<div class="rv">
-<div class="big">₹7,000<small>per month</small></div>
-<ul class="inc"><li><b>Breakfast</b>every morning</li><li><b>Packed lunch</b>for the office</li><li><b>Dinner</b>every night</li><li><b>WiFi</b>included</li><li><b>Laundry</b>included</li><li><b>Ironing</b>included</li></ul>
+<section class="day" id="day" aria-label="A typical day at StayB"><div class="track"><div class="stick"><div class="wrap day-in">
+<div class="day-left">
+<p class="kicker">A day at StayB</p>
+<div class="clock" aria-hidden="true">06:00</div>
+${SUNPATH}
+<p class="sp-cap">Kochi sits close to the equator, so the sun rises near 06:15 and sets near 18:15 all year.</p>
 </div>
-<aside class="first rv d1">
-<div class="tag">First month</div>
-<div class="fbig">₹8,000</div>
+<ol class="moments">${MOMENTS.map(([t,h,p],i)=>`<li${i?'':' class="on"'}><span class="m-t">${t}</span><div><h3>${h}</h3><p>${p}</p></div></li>`).join('')}</ol>
+</div></div></div></section>
+
+<section class="price light" id="price"><div class="wrap">
+<header class="sec-head rv"><p class="kicker">Pricing</p><h2>One price. <em>Everything in.</em></h2></header>
+<div class="price-grid">
+<div class="price-main rv">
+<p class="amount"><span>₹7,000</span><small>per month</small></p>
+<ul class="incl">
+<li><span>Breakfast</span><span>every morning</span></li><li><span>Packed lunch</span><span>for the office</span></li>
+<li><span>Dinner</span><span>every night</span></li><li><span>WiFi</span><span>included</span></li>
+<li><span>Laundry</span><span>included</span></li><li><span>Ironing</span><span>included</span></li></ul>
+</div>
+<aside class="first rv">
+<p class="kicker">First month</p>
+<p class="amount-sm">₹8,000</p>
 <p>Includes your refundable deposit and admission. The deposit is fully returned when you move out.</p>
 <ul><li>No mess bills</li><li>No WiFi add-ons</li><li>₹0 commute</li></ul>
-<a class="btn sun" href="${WA}" rel="noopener">Check Availability <span aria-hidden="true">→</span></a>
+<a class="btn primary" href="${WA}" rel="noopener">Check availability ${ARROW}</a>
 </aside>
 </div></div></section>
 
-<section class="gal" id="photos"><div class="wrap"><div class="shead rv"><div class="eyebrow">Photos</div><h2>Bright rooms. Green views.</h2></div>
-<div class="gg">
-<figure class="rv"><img src="/img/p2.jpg" alt="Laptop on the StayB balcony overlooking coconut palms and the Kakkanad skyline" loading="lazy" width="720" height="720"><figcaption>Balcony workspace</figcaption></figure>
-<figure class="rv d1"><img src="/img/p1.jpg" alt="StayB men's hostel building with balconies in Kakkanad, Kochi" loading="lazy" width="720" height="720"><figcaption>The building</figcaption></figure>
-<figure class="rv"><img src="/img/p3.jpg" alt="Beds and a side table inside a StayB hostel room near Infopark" loading="lazy" width="720" height="720"><figcaption>Rooms</figcaption></figure>
-<figure class="rv d1"><img src="/img/p4.jpg" alt="Tiled corridor with room doors at StayB hostel, Kakkanad" loading="lazy" width="720" height="720"><figcaption>Corridors</figcaption></figure>
+<section class="gal" id="photos"><div class="gtrack"><div class="gstick">
+<div class="wrap gal-head"><p class="kicker">Photos</p><h2>Bright rooms. <em>Green views.</em></h2></div>
+<div class="strip">
+<figure><div class="ph"><img src="/img/p2.jpg" alt="Laptop on the StayB balcony overlooking coconut palms and the Kakkanad skyline" loading="lazy" width="720" height="720"></div><figcaption><span>01</span>Balcony workspace</figcaption></figure>
+<figure><div class="ph"><img src="/img/p1.jpg" alt="StayB men's hostel building with balconies in Kakkanad, Kochi" loading="lazy" width="720" height="720"></div><figcaption><span>02</span>The building</figcaption></figure>
+<figure><div class="ph"><img src="/img/p3.jpg" alt="Beds and a side table inside a StayB hostel room near Infopark" loading="lazy" width="720" height="720"></div><figcaption><span>03</span>Rooms</figcaption></figure>
+<figure><div class="ph"><img src="/img/p4.jpg" alt="Tiled corridor with room doors at StayB hostel, Kakkanad" loading="lazy" width="720" height="720"></div><figcaption><span>04</span>Corridors</figcaption></figure>
+</div>
 </div></div></section>
 
-<section class="walk" id="location"><div class="wrap">
-<div class="shead rv"><div class="eyebrow">Location</div><h2>Door to desk in 7 minutes.</h2><p class="lead">StayB is in Kakkanad, a short walk from Infopark Phase 2. No bus, no auto, no traffic.</p></div>
+<section class="walk light" id="location"><div class="wrap">
+<header class="sec-head rv"><p class="kicker">Location</p><h2>Door to desk in <em>7 minutes.</em></h2><p class="lead">StayB is in Kakkanad, a short walk from Infopark Phase 2. No bus, no auto, no traffic.</p></header>
 <div class="route rv">
 <div class="timer"><span class="t">0:00</span><small>walking time</small></div>
-<svg class="rsvg rh" viewBox="0 0 1200 300" role="img" aria-label="Illustration of the 7-minute walk from StayB to Infopark Phase 2">
-<path class="rbase" d="M90 220 C260 220 300 96 470 120 S720 238 860 160 S1060 100 1110 118"/>
-<path class="rdone" d="M90 220 C260 220 300 96 470 120 S720 238 860 160 S1060 100 1110 118"/>
-<g class="mins"></g>
-<g transform="translate(33 162) scale(.32)" class="rhouse">${HOSTEL()}</g>
-<g class="rtower"><rect x="1088" y="40" width="46" height="64" rx="5"/><rect x="1138" y="62" width="34" height="42" rx="5"/></g>
-<text x="90" y="268" text-anchor="middle" class="rl">StayB</text><text x="1112" y="146" text-anchor="middle" class="rl">Infopark Ph. 2</text>
-<g class="rwalker"><circle r="10" fill="#f3d82b"/><circle r="20" fill="none" stroke="#f3d82b" stroke-opacity=".4"/></g>
-</svg>
-<svg class="rsvg rv-route" data-v="1" viewBox="0 0 320 600" aria-hidden="true">
-<path class="rbase" d="M80 520 C80 440 240 440 240 360 S80 280 80 200 S240 120 240 70"/>
-<path class="rdone" d="M80 520 C80 440 240 440 240 360 S80 280 80 200 S240 120 240 70"/>
-<g class="mins"></g>
-<g transform="translate(26 456) scale(.3)" class="rhouse">${HOSTEL()}</g>
-<g class="rtower"><rect x="214" y="-4" width="40" height="56" rx="5"/><rect x="258" y="16" width="30" height="36" rx="5"/></g>
-<text x="80" y="580" text-anchor="middle" class="rl">StayB</text><text x="200" y="34" text-anchor="end" class="rl">Infopark Ph. 2</text>
-<g class="rwalker"><circle r="10" fill="#f3d82b"/><circle r="20" fill="none" stroke="#f3d82b" stroke-opacity=".4"/></g>
-</svg>
-<p class="note">Route drawn for illustration. Open the map for directions.</p>
+${ROUTE_H}${ROUTE_V}
+<p class="r-note">Route drawn for illustration. Open the map for directions.</p>
 </div>
-<div class="wgrid">
-<div class="facts rv">
-<div><b>7 min</b><span>walk to Infopark Phase 2</span></div>
-<div><b>₹0</b><span>daily commute cost</span></div>
-<div><b>No curfew</b><span>enter any time with your key</span></div>
-<div><b>Kakkanad</b><span>Kochi's IT corridor</span></div>
-<a class="btn line" href="${MAPS}" rel="noopener">Open in Google Maps <span aria-hidden="true">↗</span></a>
-</div>
-<div class="mapf rv d1"><iframe title="Map of Infopark Phase 2, Kakkanad, Kochi" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Infopark+Phase+2,+Kakkanad,+Kochi&z=15&output=embed"></iframe></div>
+<div class="loc-grid">
+<dl class="loc-facts rv">
+<div><dt>7 min</dt><dd>walk to Infopark Phase 2</dd></div>
+<div><dt>₹0</dt><dd>daily commute cost</dd></div>
+<div><dt>No curfew</dt><dd>enter any time with your key</dd></div>
+<div><dt>Kakkanad</dt><dd>Kochi's IT corridor</dd></div>
+<a class="link" href="${MAPS}" rel="noopener">Open in Google Maps ${ARROW}</a>
+</dl>
+<div class="mapf rv"><iframe title="Map of Infopark Phase 2, Kakkanad, Kochi" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Infopark+Phase+2,+Kakkanad,+Kochi&z=15&output=embed"></iframe></div>
 </div>
 </div></section>
 
-<section class="rules" id="rules"><div class="wrap"><div class="shead rv"><div class="eyebrow">How we live</div><h2>Simple rules. No surprises.</h2></div>
-<div class="rg"><div class="rc rv"><em>01</em><h3>Entry &amp; exit</h3><p>No fixed curfew. Use your key.</p></div><div class="rc rv d1"><em>02</em><h3>Guests</h3><p>Common areas only. No overnight guests.</p></div><div class="rc rv d2"><em>03</em><h3>Noise</h3><p>Quiet hours after 11 PM.</p></div><div class="rc rv d3"><em>04</em><h3>Cleanliness</h3><p>Rooms are yours. Common areas are shared.</p></div></div>
+<section class="rules" id="rules"><div class="wrap">
+<header class="sec-head rv"><p class="kicker">How we live</p><h2>Simple rules. <em>No surprises.</em></h2></header>
+<ol class="rule-list">
+<li class="rv"><span class="n">01</span><h3>Entry &amp; exit</h3><p>No fixed curfew. Use your key.</p></li>
+<li class="rv"><span class="n">02</span><h3>Guests</h3><p>Common areas only. No overnight guests.</p></li>
+<li class="rv"><span class="n">03</span><h3>Noise</h3><p>Quiet hours after 11 PM.</p></li>
+<li class="rv"><span class="n">04</span><h3>Cleanliness</h3><p>Rooms are yours. Common areas are shared.</p></li>
+</ol>
 <p class="who rv">Who lives here: employees from TCS, Infosys, UST and other Infopark companies. Freshers and experienced, all professionals.</p>
-<div class="parents rv"><div><div class="eyebrow">For parents</div><h2>Safe and predictable.</h2></div>
-<ul><li><span>Walkable location</span><b>7 min to Infopark</b></li><li><span>Refundable deposit</span><b>Fully returned</b></li><li><span>Inclusive food</span><b>All meals covered</b></li><li><span>Clear rules</span><b>No surprises</b></li></ul></div></div></section>
+<div class="parents rv">
+<div><p class="kicker">For parents</p><h2>Safe and <em>predictable.</em></h2></div>
+<dl><div><dt>Walkable location</dt><dd>7 min to Infopark</dd></div><div><dt>Refundable deposit</dt><dd>Fully returned</dd></div><div><dt>Inclusive food</dt><dd>All meals covered</dd></div><div><dt>Clear rules</dt><dd>No surprises</dd></div></dl>
+</div>
+</div></section>
 
-<section class="areas"><div class="wrap prose"><div class="shead rv"><div class="eyebrow">Find your stay</div><h2>Hostel in Kakkanad, built for Infopark.</h2></div>
-<p class="rv">StayB is a men's hostel in Kakkanad, Kochi, made for people who work at Infopark. Whether you are searching for a hostel near Infopark, a PG for men, or a hostel with food, the answer is the same: walk 7 minutes, eat well and pay one price.</p>
-<div class="alinks rv">${LANDINGS.map(l=>`<a href="/${l.slug}">${l.kw} →</a>`).join('')}</div></div></section>
+<section class="areas light"><div class="wrap areas-in">
+<header class="sec-head rv"><p class="kicker">Find your stay</p><h2>Hostel in Kakkanad, <em>built for Infopark.</em></h2>
+<p class="lead">StayB is a men's hostel in Kakkanad, Kochi, made for people who work at Infopark. Whether you are searching for a hostel near Infopark, a PG for men, or a hostel with food, the answer is the same: walk 7 minutes, eat well and pay one price.</p></header>
+<ul class="index rv">${LANDINGS.map(l=>`<li><a href="/${l.slug}"><span>${l.kw}</span>${ARROW}</a></li>`).join('')}</ul>
+</div></section>
 
-<section class="faq" id="faq"><div class="wrap"><div class="shead rv"><div class="eyebrow">Questions</div><h2>Everything you would ask.</h2></div><div class="rv">${faqHtml(FAQ)}</div></div></section>
+<section class="faq light" id="faq"><div class="wrap faq-in">
+<header class="sec-head rv"><p class="kicker">Questions</p><h2>Everything <em>you would ask.</em></h2></header>
+<div class="qa rv">${faqHtml(FAQ)}</div>
+</div></section>
 
-<section class="final"><div class="sun3"></div><div class="wrap"><div class="eyebrow center">Ready?</div><h2>Your bed<br>is <em>7 minutes</em><br>from work.</h2>
+<section class="final"><div class="final-bg"><img src="/img/p1.jpg" alt="" loading="lazy" width="720" height="720"></div><div class="wrap final-in">
+<p class="kicker">Ready?</p>
+<h2>Your bed is <em>7 minutes</em> from work.</h2>
 <p class="lead">Most residents find us through word of mouth. Come see why. Beds available now in Kakkanad, Kochi.</p>
-<div class="cta"><a class="btn sun" href="${WA}" rel="noopener">Check Availability →</a><a class="btn line" href="tel:${PHONE}">Call ${PHONE_DISP}</a></div></div></section>` + footer;
+<div class="actions"><a class="btn primary" href="${WA}" rel="noopener">Check availability ${ARROW}</a><a class="btn ghost" href="tel:${PHONE}">Call ${PHONE_DISP}</a></div>
+</div></section>
+</main>` + footer;
 
 fs.writeFileSync(OUT+'index.html', home);
 
@@ -298,15 +291,23 @@ for (const l of LANDINGS){
   const ld={"@context":"https://schema.org","@graph":[...lodging["@graph"],faqLd(l.faq),
    {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"StayB","item":BASE+"/"},{"@type":"ListItem","position":2,"name":l.kw,"item":BASE+path}]}]};
   const html = head({title:l.title,desc:l.desc,path,ld}) + nav + `
-<header class="lp-hero"><div class="sunball"></div><div class="wrap"><div class="crumbs"><a href="/">StayB</a> / ${l.kw}</div><h1>${l.h1}</h1><p class="lead">${l.intro}</p>
-<div class="cta"><a class="btn sun" href="${WA}" rel="noopener">Check Availability →</a><a class="btn line" href="tel:${PHONE}">Call ${PHONE_DISP}</a></div></div></header>
-<main class="lp-body"><div class="wrap">
+<main>
+<header class="lp-hero"><div class="wrap lp-hero-in">
+<div><p class="crumbs"><a href="/">StayB</a><span>/</span>${l.kw}</p><h1 class="display-2">${l.h1}</h1><p class="lead">${l.intro}</p>
+<div class="actions"><a class="btn primary" href="${WA}" rel="noopener">Check availability ${ARROW}</a><a class="btn ghost" href="tel:${PHONE}">Call ${PHONE_DISP}</a></div></div>
+<figure class="lp-media"><div class="frame"><img src="/img/p2.jpg" alt="The StayB balcony overlooking Kakkanad" width="720" height="720"></div></figure>
+</div></header>
+<div class="lp-body light"><div class="wrap lp-grid">
+<article class="lp-main">
 ${l.sections.map(([h,p])=>`<h2>${h}</h2><p>${p}</p>`).join('')}
-<h2>Quick facts</h2><ul>${l.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>
-<h2>Questions</h2>${faqHtml(l.faq)}
-<h2>More ways to find us</h2><p>${LANDINGS.filter(x=>x!==l).map(x=>`<a href="/${x.slug}">${x.kw}</a>`).join(' · ')}</p>
-<div class="cta"><a class="btn dark" href="${WA}" rel="noopener">Message us on WhatsApp →</a><a class="btn line-dark" href="/">See the full StayB experience</a></div>
-</div></main>` + footer;
+<h2>Questions</h2><div class="qa">${faqHtml(l.faq)}</div>
+</article>
+<aside class="lp-side"><p class="kicker">Quick facts</p><ul>${l.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>
+<a class="btn primary" href="${WA}" rel="noopener">Message us on WhatsApp ${ARROW}</a><a class="link" href="/">See the full StayB experience ${ARROW}</a></aside>
+</div>
+<div class="wrap"><p class="kicker more-k">More ways to find us</p><ul class="index">${LANDINGS.filter(x=>x!==l).map(x=>`<li><a href="/${x.slug}"><span>${x.kw}</span>${ARROW}</a></li>`).join('')}</ul></div>
+</div>
+</main>` + footer;
   fs.writeFileSync(OUT+l.slug+'.html', html);
 }
 
@@ -316,7 +317,7 @@ const today=new Date().toISOString().slice(0,10);
 fs.writeFileSync(OUT+'sitemap.xml',`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.map(u=>`<url><loc>${BASE}${u}</loc><lastmod>${today}</lastmod><priority>${u==='/'?'1.0':'0.8'}</priority></url>`).join('')}</urlset>`);
 fs.writeFileSync(OUT+'robots.txt',`User-agent: *\nAllow: /\nSitemap: ${BASE}/sitemap.xml\n`);
 fs.writeFileSync(OUT+'llms.txt',`# StayB Men's Hostel\n> Men's hostel in Kakkanad, Kochi, a 7-minute walk from Infopark Phase 2. ₹7,000/month including breakfast, packed lunch, dinner, WiFi, laundry and ironing. First month ₹8,000 including refundable deposit and admission. Phone ${PHONE_DISP}.\n\n${urls.map(u=>`- ${BASE}${u}`).join('\n')}\n`);
-fs.writeFileSync(OUT+'404.html', head({title:'Page not found | StayB',desc:'Page not found',path:'/404',ld:{}}).replace('index,follow','noindex')+nav+`<header class="lp-hero"><div class="wrap"><h1>Lost? <em>Home</em> is 7 minutes away.</h1><div class="cta"><a class="btn sun" href="/">Back to StayB</a></div></div></header>`+footer);
+fs.writeFileSync(OUT+'404.html', head({title:'Page not found | StayB',desc:'Page not found',path:'/404',ld:{}}).replace('index,follow','noindex')+nav+`<main><header class="lp-hero lp-404"><div class="wrap"><h1 class="display-2">Lost? <em>Home</em> is 7 minutes away.</h1><div class="actions"><a class="btn primary" href="/">Back to StayB</a></div></div></header></main>`+footer);
 if(!PV)fs.writeFileSync(OUT+"vercel.json", JSON.stringify({cleanUrls:true,headers:[
  {source:'/assets/(.*)',headers:[{key:'Cache-Control',value:'public, max-age=31536000, immutable'}]},
  {source:'/img/(.*)',headers:[{key:'Cache-Control',value:'public, max-age=31536000, immutable'}]}]},null,2));
